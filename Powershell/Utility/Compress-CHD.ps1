@@ -4,7 +4,7 @@ param (
     $Source='D:\Convert\Source',
     $Destination='D:\Convert\destination',
     $ChdmanEXE='f:\CHD\chdman.exe',
-    $7zip ="C:\Program Files\7-Zip\7z.exe",
+    zip ="C:\Program Files\7-Zip\7z.exe",
     [STRING[]]$Extension = ('iso','bin','gz'),
     $Threads = 6
     
@@ -36,7 +36,7 @@ param (
             Write-Verbose "Extracting Source file $Sourcefile"
             Write-Progress -Status "Extracting Source file $Sourcefile" -Activity "Extracting" -ParentId 1
             $outtemp = "$Source" +"\temp"
-            &$7zip e $Sourcefile -o"$outtemp"
+            &zip e $Sourcefile -o"$outtemp"
             $file = Get-ChildItem $outtemp -Recurse -Include $Extensions
             
             If ($file.count -eq 1) {
