@@ -5,6 +5,7 @@
 ;Testmode in teknoparrot don't save settings, don't waste your time
 ;Customrez are need for patching the gs2.exe to run 1920x1080
 ;Very strict rom set are needed, not use of ALL AH exe or other jvc configs in the directory.
+;MD5 checksum for GS2.exe f837cc79d4cf980ae62b71e8214d1e2f
 
 run, ..\..\..\Utilities\DemulShooter\DemulShooter.exe -target=ringwide -rom=og
 NewRes := Array(32,1920,1080,60)
