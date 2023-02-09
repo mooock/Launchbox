@@ -23,8 +23,8 @@ function Set-LaunchboxImageCache
     
     Param
     (
-        $Source = '\\cubestation.thehq.dk\launchbox',
-        $Destination = 'd:\'
+        $Source,
+        $Destination
     )
 
     Begin
