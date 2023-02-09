@@ -1,0 +1,61 @@
+<#
+.Synopsis
+   Sets Launchbox Cache folder
+
+.DESCRIPTION
+   Function can be used to redirect all images path to a remote location and keep the cache folders in the installation folder to benefit from fast storage and large image libraries
+   Symlinks needs to be created on a NTFS drive, and can be deleted without its content gets deleted. 
+
+.EXAMPLE
+   This simulate symlinks that will be created on the destination. d:\ whould be location for installtion path of launchbox where source is where the network resources are for all the image folders.
+   Set-LaunchboxImageCache -Source "\\Server\Lauchbox" -Destination "d:\" -whatif
+
+.NOTES
+  Version:        1.0
+  Author:         Danny Nilsson
+  Creation Date:  09-02-2023  
+#>
+
+function Set-LaunchboxImageCache
+{
+    [CmdletBinding(SupportsShouldProcess)]
+    [Alias()]
+    
+    Param
+    (
+        $Source = '\\cubestation.thehq.dk\launchbox',
+        $Destination = 'd:\'
+    )
+
+    Begin
+    {
+        $SourceImageFolders = Join-Path $Source -ChildPath 'Images'
+        If (-not (Test-Path $SourceImageFolders)) {
+            Write-Error "Path $SourceImageFolders doesn't exist"
+            Break
+        }
+        $Folders = Get-ChildItem -Path $SourceImageFolders
+        $Folders = $Folders | Where-Object Name -NotLike "*cache*"
+        New-Item -Path "$Destination\Images" -ItemType Directory -ErrorAction SilentlyContinue | Out-Null
+    }
+    Process
+    {
+        ForEach ($folder in $Folders) {
+            
+            $TargetPath = $folder.fullname
+            $SourcePath = join-path -Path $Destination -ChildPath 'images' 
+            $SourcePath = join-path -Path $SourcePath  -ChildPath $folder.name
+
+            if ($PSCmdlet.ShouldProcess("Source $TargetPath to Target $SourcePath")) {
+                New-Item -ItemType SymbolicLink -Path $SourcePath -Target $TargetPath | Out-Null
+                [PSCUSTOMOBJECT]@{
+                    Source      = $TargetPath
+                    Destination = $SourcePath
+                }
+            }
+        }
+    }
+    End
+    {
+    }
+}
